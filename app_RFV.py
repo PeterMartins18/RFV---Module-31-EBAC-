@@ -1,17 +1,16 @@
 
-# Imports
 import pandas as pd
 import streamlit as st
 import numpy as np
 from datetime import datetime
 from io import BytesIO
 
-@st.cache_data
+@st.cache
 def convert_df(df):
     return df.to_csv(index=False).encode('utf-8')
 
-# Função para converter o df para excel
-@st.cache_data
+# Function to convert the df to excel
+@st.cache
 def to_excel(df):
     output = BytesIO()
     writer = pd.ExcelWriter(output, engine='xlsxwriter')
@@ -20,7 +19,7 @@ def to_excel(df):
     processed_data = output.getvalue()
     return processed_data
 
-### Criando os segmentos
+# Function to classify recency
 def recencia_class(x, r, q_dict):
     """Classifica como melhor o menor quartil 
        x = valor da linha,
@@ -36,6 +35,7 @@ def recencia_class(x, r, q_dict):
     else:
         return 'D'
 
+# Function to classify frequency and value
 def freq_val_class(x, fv, q_dict):
     """Classifica como melhor o maior quartil 
        x = valor da linha,
@@ -51,14 +51,14 @@ def freq_val_class(x, fv, q_dict):
     else:
         return 'A'
 
-# Função principal da aplicação
+# Main function of the application
 def main():
-    # Configuração inicial da página da aplicação
+    # Initial page configuration
     st.set_page_config(page_title='RFV',
                        layout="wide",
                        initial_sidebar_state='expanded')
 
-    # Título principal da aplicação
+    # Main title of the application
     st.write("""# RFV
 
     RFV significa recência, frequência, valor e é utilizado para segmentação de clientes baseado no comportamento 
@@ -75,11 +75,11 @@ def main():
     """)
     st.markdown("---")
     
-    # Botão para carregar arquivo na aplicação
+    # Sidebar button to upload a file
     st.sidebar.write("## Suba o arquivo")
     data_file_1 = st.sidebar.file_uploader("Bank marketing data", type=['csv', 'xlsx'])
 
-    # Verifica se há conteúdo carregado na aplicação
+    # Check if there is content loaded in the application
     if data_file_1 is not None:
         df_compras = pd.read_csv(data_file_1, infer_datetime_format=True, parse_dates=['DiaCompra'])
 
@@ -157,3 +157,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+
